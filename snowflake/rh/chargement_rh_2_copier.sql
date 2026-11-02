@@ -18,7 +18,7 @@ COPY INTO NYC_TAXI.RAW.DRIVERS
 FROM (SELECT $1, $2, $3, $4, $5, $6::date, $7, $8, $9::date, $10::date,
              METADATA$FILENAME, METADATA$START_SCAN_TIME::timestamp_ntz
       FROM @NYC_TAXI.RAW.RH_STAGE)
-FILES = ('drivers.csv')
+PATTERN = '(^|.*/)drivers[.]csv$'
 FILE_FORMAT = (FORMAT_NAME = NYC_TAXI.RAW.CSV_RH)
 ON_ERROR = ABORT_STATEMENT
 PURGE = TRUE;
@@ -27,7 +27,7 @@ COPY INTO NYC_TAXI.RAW.DRIVER_SHIFTS
 FROM (SELECT $1, $2, $3::date, $4, $5::integer, $6::float, $7::integer, $8::float,
              METADATA$FILENAME, METADATA$START_SCAN_TIME::timestamp_ntz
       FROM @NYC_TAXI.RAW.RH_STAGE)
-FILES = ('driver_shifts.csv')
+PATTERN = '(^|.*/)driver_shifts[.]csv$'
 FILE_FORMAT = (FORMAT_NAME = NYC_TAXI.RAW.CSV_RH)
 ON_ERROR = ABORT_STATEMENT
 PURGE = TRUE;
@@ -37,4 +37,10 @@ SELECT
     (SELECT COUNT(*) FROM NYC_TAXI.RAW.DRIVERS)       AS chauffeurs,
     (SELECT COUNT(*) FROM NYC_TAXI.RAW.DRIVER_SHIFTS) AS services;
 LIST @NYC_TAXI.RAW.RH_STAGE;            -- aucun fichier
--- Relancé, ce fichier ne charge rien de plus : COPY INTO se souvient des fichiers déjà chargés.
+-- PATTERN sélectionne uniquement le nom exact de chaque CSV, avec ou sans préfixe de chemin.
+-- Contrairement à FILES, il ne désigne pas explicitement un fichier absent après PURGE.
+-- Référence : https://docs.snowflake.com/en/sql-reference/sql/copy-into-table
+-- Rejouabilité à tester manuellement dans Snowsight, sans redéposer les fichiers :
+-- relancer sur le stage vide ; attendu : aucun nouveau chargement, aucune erreur de fichier absent,
+-- toujours 400 chauffeurs et 25 951 services, et un stage vide.
+-- Ce correctif a seulement été vérifié statiquement ; aucun SQL exécuté dans cette intervention.
