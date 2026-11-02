@@ -1,0 +1,11 @@
+# Secrets : ne jamais versionner (mots de passe, clés)
+.env
+*.p8
+*.pem
+
+# Système
+.DS_Store
+
+# Fichiers RH : conserver localement, ne pas publier
+/data/drivers.csv
+/data/driver_shifts.csv
