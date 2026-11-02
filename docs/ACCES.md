@@ -1,49 +1,56 @@
 # Les accès — carte des droits et cahier de tests
 
-État au 2 novembre 2026 : trame conservée pour la suite. Aucun rôle, droit ou résultat de test vérifié dans Snowflake ; les lignes déjà remplies sont les indications du modèle, pas des constats. À compléter à partir du jour 1 après-midi.
+Étape 10 : carte des droits préparée à partir de `snowflake/gouvernance/01_gouvernance.sql`. Le contexte d'installation et de chargement a été confirmé par l'utilisateur ; ce nouveau script n'a pas été exécuté ni testé dans Snowflake. Les droits ci-dessous sont prévus, pas constatés.
 
-- **Partie 1, jours 1 et 2** : la carte des droits, complétée au fur et à mesure que vous créez rôles et objets ;
-- **Partie 2, jour 2** : le cahier de tests, « attendu » écrit avant les politiques, « obtenu » après.
+- **Partie 1, jours 1 et 2** : complétée uniquement pour les objets et droits de l'étape 10.
+- **Partie 2, jour 2** : trame conservée, sans résultat inventé.
 
 ---
 
 ## Partie 1 — Carte des droits
 
-À compléter du jour 1 au jour 2. Dans Snowflake, faire une action demande d'être propriétaire de l'objet ou d'avoir reçu un privilège précis. Cette carte vous évite de chercher, à chaque erreur `Insufficient privileges`, quel droit manque et à qui.
-
-Vérifiez chaque ligne dans la documentation des privilèges (ressources du jour 2), puis avec `SHOW GRANTS TO ROLE …`.
+Après exécution puis réexécution dans Snowsight, comparer cette carte avec les commandes finales du script. Vérifier notamment les propriétaires et l'absence de lecture des données RH pour `GOUVERNANCE`.
 
 ### Qui possède quoi
 
-Le propriétaire d'un objet est le rôle qui l'a créé.
-
 | Objet | Propriétaire |
 |---|---|
-| Tables de `RAW` et de `MARTS` | le rôle des outils |
-| Schéma `GOUVERNANCE` | |
-| Tags | |
+| Tables de `RAW` et de `MARTS` | `TRANSFORMER` selon les scripts fournis ; propriété effective à confirmer, inchangée par l'étape 10 |
+| Schéma `GOUVERNANCE` | `GOUVERNANCE`, après transfert par `ACCOUNTADMIN` avec conservation des droits |
+| Tags | `GOUVERNANCE`, rôle qui les crée |
 | Politiques de masquage | |
 | Politique d'accès par ligne | |
 | Table `ACCES_DEPOT` | |
-| Table `QUALITE_RESULTATS` | |
+| Table `QUALITE_RESULTATS` | `GOUVERNANCE`, rôle qui la crée |
 | Vue `V_CATALOGUE` | |
+
+Les lignes vides concernent les étapes ultérieures ; ces objets ne sont pas créés ici.
 
 ### Qui fait quoi, avec quel droit
 
 | Action | Rôle qui la fait | Privilège nécessaire | Accordé par |
 |---|---|---|---|
-| Créer un tag | `GOUVERNANCE` | `CREATE TAG` sur le schéma, ou en être propriétaire | `ACCOUNTADMIN` |
-| Poser un tag sur une colonne de `DIM_DRIVER` | | | |
+| Utiliser la base et le warehouse | `GOUVERNANCE` | `USAGE` sur `NYC_TAXI` et `NYC_TAXI_WH` | `ACCOUNTADMIN` |
+| Utiliser les schémas de données, sans lire leurs tables | `GOUVERNANCE` | `USAGE` sur `NYC_TAXI.RAW` et `NYC_TAXI.MARTS` ; aucun `SELECT` accordé | `ACCOUNTADMIN` |
+| Créer les tags et `QUALITE_RESULTATS` | `GOUVERNANCE` | Propriété du schéma `NYC_TAXI.GOUVERNANCE` | `ACCOUNTADMIN` transfère la propriété |
+| Utiliser le schéma des tags | `TRANSFORMER` | `USAGE` sur `NYC_TAXI.GOUVERNANCE` | `GOUVERNANCE` |
+| Poser un tag sur une colonne de `DIM_DRIVER` | `TRANSFORMER` (pose non réalisée à cette étape) | Propriété de la table et `APPLY` sur chacun des trois tags ; `USAGE` sur leur schéma | `GOUVERNANCE` pour les tags et leur schéma ; propriété de la table conservée |
 | Créer une politique de masquage | | | |
 | Attacher une politique de masquage à un tag | | | |
 | Ajouter une politique d'accès par ligne à une table | | | |
-| Écrire une ligne dans `QUALITE_RESULTATS` | | | |
+| Écrire et lire les résultats de qualité | `TRANSFORMER` | `INSERT`, `SELECT` sur `NYC_TAXI.GOUVERNANCE.QUALITE_RESULTATS` | `GOUVERNANCE` |
+| Créer une vue dans le schéma de gouvernance | `TRANSFORMER` (aucune vue créée ici) | `CREATE VIEW` sur `NYC_TAXI.GOUVERNANCE` | `GOUVERNANCE` |
+| Disposer des droits d'attachement pour les futures politiques | `GOUVERNANCE` (aucune politique créée ou attachée ici) | `APPLY MASKING POLICY` et `APPLY ROW ACCESS POLICY` sur le compte | `ACCOUNTADMIN` |
 | Lire `DIM_DRIVER` | | | |
-| Exécuter une requête | chaque rôle | | |
+| Exécuter une requête de calcul avec le warehouse existant | `GOUVERNANCE` | `USAGE` sur `NYC_TAXI_WH` ; droits sur les objets nécessaires à la requête | `ACCOUNTADMIN` pour le warehouse |
+
+`GOUVERNANCE` est attribué à l'utilisateur courant par `ACCOUNTADMIN`, sans recevoir `TRANSFORMER` ni être rattaché à `SYSADMIN`. Les rôles secondaires sont désactivés dans le script. Les droits préexistants de `TRANSFORMER` sur la base et le warehouse viennent de l'installation.
+
+Références officielles vérifiées pour la préparation : [GRANT privileges](https://docs.snowflake.com/en/sql-reference/sql/grant-privilege), [GRANT OWNERSHIP](https://docs.snowflake.com/en/sql-reference/sql/grant-ownership), [CREATE TAG](https://docs.snowflake.com/en/sql-reference/sql/create-tag).
 
 ### Ce que cette carte permet à un rôle de défaire
 
-Pour chaque rôle qui peut poser ou retirer un tag, ou détacher une politique : que pourrait-il démasquer ? Est-ce acceptable, et qui le surveille ?
+`TRANSFORMER`, propriétaire des données et titulaire de `APPLY` sur les tags, pourra changer ou retirer leur affectation ; une protection reposant ensuite sur ces tags devra tenir compte de ce pouvoir. `GOUVERNANCE` pourra gérer ses règles et leur attachement avec ses privilèges de compte. Ces capacités ne sont ni testées ni utilisées ici ; acceptabilité et surveillance restent à documenter lors des étapes concernées.
 
 ---
 
