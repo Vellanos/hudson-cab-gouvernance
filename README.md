@@ -16,9 +16,11 @@ Documents du jour 1 matin : [veille RGPD](docs/VEILLE.md), [inventaire des 18 co
 - **Accès et tags** : justifier les accès étendus, les données réidentifiantes et les colonnes personnelles sans tag adapté ; clarifier l'accès administrateur ([art. 4 point 1](https://www.cnil.fr/fr/reglement-europeen-protection-donnees/chapitre1), [art. 25 et 32](https://www.cnil.fr/fr/reglement-europeen-protection-donnees/chapitre4)).
 - **Qualité** : les huit contrôles sont partiels et leurs seuils internes ; une alerte exige une correction suivie, même sous le seuil bloquant ([art. 5 §1 d](https://www.cnil.fr/fr/reglement-europeen-protection-donnees/chapitre2), [art. 16](https://www.cnil.fr/fr/reglement-europeen-protection-donnees/chapitre3)).
 
+Catalogue RH (étape 11) préparé dans [les quatre fiches SQL](snowflake/rh/catalogue/), à exécuter dans Snowsight après le modèle DIM_DEPOT. Seules les catégories exactes du contrat sont affectées : les dates professionnelles, dépôts, indicateurs calculés et mesures par chauffeur sans catégorie restent explicitement recensés dans le [registre](docs/REGISTRE.md). Une colonne personnelle non taguée ne sera pas automatiquement protégée par un masquage fondé uniquement sur ce tag : **C20 reste partiellement couvert**. Les tags seuls ne masquent pas les données ; R1 reste à valider juridiquement.
+
 ## État d'avancement
 
-Correction Git et rédaction documentaire du jour 1 matin réalisées : quatre fiches datées, trois sources officielles proposées pour le suivi, inventaire et lecture statique du lignage. Le contrat et les SQL fournis sont inchangés.
+Correction Git et rédaction documentaire du jour 1 matin réalisées : quatre fiches datées, trois sources officielles proposées pour le suivi, inventaire et lecture statique du lignage. Le contrat reste inchangé.
 
 Restent pour clôturer le matin : abonnement réel au lecteur RSS et capture par l'utilisateur, relecture du binôme et validation des questions juridiques. EUR-Lex n'a pas pu être lu directement (anti-robot) : texte consulté sur la CNIL ; PDF CEPD français indisponible (429), version anglaise officielle vérifiée.
 

@@ -67,7 +67,34 @@ Preuves statiques : [chargement](../snowflake/rh/chargement_rh_2_copier.sql), [v
 
 Les colonnes techniques `_source_file` et `_loaded_at`, absentes des CSV, sont ajoutées au chargement et renommées `source_file` et `loaded_at` dans les vues. Elles ne sont pas conservées dans les marts fournis. Leur présence ne rend pas les lignes anonymes.
 
-Proposition documentaire de tags de table : `SENSIBILITE=confidentiel` pour les quatre tables RH et `public` pour DIM_DEPOT, conformément à sa nature dans le contrat. `DUREE_CONSERVATION=5 ans après la fin du contrat` décrit R1 pour les tables RH ; sa justification juridique reste en attente (VEILLE, section 4). Aucun tag n'a été posé.
+Proposition documentaire de tags de table : `SENSIBILITE=confidentiel` pour les quatre tables RH et `interne` pour DIM_DEPOT, conformément au modèle officiel. `DUREE_CONSERVATION=5 ans après la fin du contrat` décrit R1 pour les tables RH ; sa justification juridique reste en attente (VEILLE, section 4). Les affectations de tags sont préparées dans les fiches de catalogue ; elles restent à exécuter et vérifier dans Snowsight.
+
+### Catalogue RH — étape 11 : couverture et limites
+
+Les quatre fiches SQL de `snowflake/rh/catalogue/` sont préparées à partir des définitions existantes, sans exécution Snowflake. RAW.DRIVERS et MARTS.DIM_DRIVER ont une description de chacune de leurs 12 colonnes ; RAW.DRIVER_SHIFTS et MARTS.MART_DRIVER_MONTHLY ont une fiche courte.
+
+Décision utilisateur : seules les correspondances exactes avec les valeurs autorisées du contrat sont taguées, sans nouvelle catégorie ni valeur de remplacement trompeuse.
+
+| Table | Colonnes ayant une catégorie DONNEE_PERSONNELLE |
+|---|---|
+| RAW.DRIVERS et MARTS.DIM_DRIVER | driver_id → identifiant_interne ; first_name et last_name → nom ; email → email ; phone → telephone ; birth_date → date_naissance ; tlc_license_number → identifiant_officiel |
+| RAW.DRIVER_SHIFTS | shift_id et driver_id → identifiant_interne |
+| MARTS.MART_DRIVER_MONTHLY | driver_id → identifiant_interne ; driver_name → nom (concaténation de first_name et last_name) |
+
+Les informations suivantes restent personnelles par leur rattachement au chauffeur, mais aucune catégorie autorisée ne leur correspond :
+
+| Table | Colonnes personnelles sans tag adapté |
+|---|---|
+| RAW.DRIVERS | depot, hire_date, end_date |
+| MARTS.DIM_DRIVER | depot, hire_date, end_date ; is_active (calculé depuis end_date), tenure_years (ancienneté calculée) |
+| RAW.DRIVER_SHIFTS | shift_date, depot, start_hour, hours_worked, trips_count, revenue_usd |
+| MARTS.MART_DRIVER_MONTHLY | activity_month (mois calculé), depot, nb_shifts (comptage), hours_worked, trips_count, revenue_usd (sommes mensuelles par chauffeur) |
+
+Les métadonnées `_source_file` et `_loaded_at` des deux tables RAW ne sont pas des identifiants de chauffeur en elles-mêmes ; elles sont associées aux lignes RH et n'ont pas de catégorie adaptée. Elles restent sans tag DONNEE_PERSONNELLE. Les descriptions complètes de RAW.DRIVERS expliquent leur provenance technique.
+
+**Limite C20 : couverture incomplète.** Une colonne personnelle non taguée n'est pas automatiquement protégée par un futur masquage fondé uniquement sur DONNEE_PERSONNELLE. Les tags de table ne remplacent pas cette couverture et les tags seuls n'appliquent aucun masquage. Ce choix respecte le vocabulaire du contrat ; il ne satisfait pas entièrement C20. Aucune politique n'est créée à cette étape.
+
+Les quatre tables RH reçoivent dans les fiches `SENSIBILITE=confidentiel` et `DUREE_CONSERVATION=5 ans après la fin du contrat`. Cette dernière valeur décrit R1, sans validation juridique ni mécanisme de purge. DIM_DEPOT reste non personnel et de sensibilité `interne`, selon le modèle officiel inchangé, à exécuter séparément avant les quatre fiches. Les rythmes décrits correspondent aux exécutions des scripts fournis ; leur fréquence métier n'est pas précisée.
 
 ### Ce qui a surpris
 
