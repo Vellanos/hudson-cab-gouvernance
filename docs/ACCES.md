@@ -19,8 +19,8 @@ Après exécution puis réexécution du nouveau script 02 dans Snowsight, compar
 | Schéma `GOUVERNANCE` | `GOUVERNANCE`, après transfert par `ACCOUNTADMIN` avec conservation des droits |
 | Tags | `GOUVERNANCE`, rôle qui les crée |
 | Politiques de masquage | |
-| Politique d'accès par ligne | |
-| Table `ACCES_DEPOT` | |
+| Politique d'accès par ligne | GOUVERNANCE, propriétaire de RAP_DEPOT préparée dans 04_acces_depot.sql |
+| Table `ACCES_DEPOT` | GOUVERNANCE, propriétaire de la table préparée dans 04_acces_depot.sql |
 | Table `QUALITE_RESULTATS` | `GOUVERNANCE`, rôle qui la crée |
 | Vue `V_CATALOGUE` | |
 
@@ -37,7 +37,7 @@ Les lignes vides concernent les étapes ultérieures ; ces objets ne sont pas cr
 | Poser un tag sur une colonne de `DIM_DRIVER` | `TRANSFORMER` (catalogue vérifié par l'utilisateur) | Propriété de la table et `APPLY` sur chacun des trois tags ; `USAGE` sur leur schéma | `GOUVERNANCE` pour les tags et leur schéma ; propriété de la table conservée |
 | Créer une politique de masquage | | | |
 | Attacher une politique de masquage à un tag | | | |
-| Ajouter une politique d'accès par ligne à une table | | | |
+| Ajouter une politique d'accès par ligne à une table | `GOUVERNANCE`, attachements préparés sur DIM_DRIVER et MART_DRIVER_MONTHLY | `APPLY ROW ACCESS POLICY` sur le compte, sans SELECT RH | `ACCOUNTADMIN` au jour 1 |
 | Écrire et lire les résultats de qualité | `TRANSFORMER` | `INSERT`, `SELECT` sur `NYC_TAXI.GOUVERNANCE.QUALITE_RESULTATS` | `GOUVERNANCE` |
 | Créer une vue dans le schéma de gouvernance | `TRANSFORMER` (aucune vue créée ici) | `CREATE VIEW` sur `NYC_TAXI.GOUVERNANCE` | `GOUVERNANCE` |
 | Disposer des droits d'attachement pour les futures politiques | `GOUVERNANCE` (aucune politique créée ou attachée ici) | `APPLY MASKING POLICY` et `APPLY ROW ACCESS POLICY` sur le compte | `ACCOUNTADMIN` |
@@ -59,8 +59,28 @@ Toutes les lignes suivantes sont préparées dans `snowflake/gouvernance/02_role
 
 Les quatre rôles sont attribués à CURRENT_USER pour les tests. Aucun héritage de TRANSFORMER ou de GOUVERNANCE, aucun USAGE ou SELECT sur RAW/STAGING, aucun droit de modification des données, de création d'objet ou de gestion des tags n'est ajouté aux métiers. L'USAGE du schéma GOUVERNANCE ne donne pas SELECT sur ses tables ; le droit aux futures vues n'ouvre pas les vues déjà existantes. V_CATALOGUE n'est pas créée à cette étape.
 
-Le script est additif : IF NOT EXISTS et GRANT le rendent rejouable, sans retirer d'éventuels droits ou héritages préexistants. Comparer les SHOW GRANTS et SHOW FUTURE GRANTS finaux avec cette carte ; signaler tout surplus plutôt que le corriger arbitrairement. Le filtrage par dépôt et le masquage restent à implémenter aux étapes ultérieures.
+Le script est additif : IF NOT EXISTS et GRANT le rendent rejouable, sans retirer d'éventuels droits ou héritages préexistants. Comparer les SHOW GRANTS et SHOW FUTURE GRANTS finaux avec cette carte ; signaler tout surplus plutôt que le corriger arbitrairement. Les rôles métier et leurs droits sont validés selon l'utilisateur. Le masquage est préparé dans le script 03 avec des contrôles partiels signalés ; le filtrage de l'étape 6 est préparé dans le script 04, sans validation Snowflake par cette intervention.
 
+
+### Contrôle par dépôt — étape 6 préparée
+
+Le script `snowflake/gouvernance/04_acces_depot.sql` est préparé avec GOUVERNANCE, sans exécution Snowflake par cette intervention.
+
+| Objet ou action | Rôle et droits |
+|---|---|
+| Créer et alimenter ACCES_DEPOT | GOUVERNANCE, propriétaire du schéma puis de la table ; chargement des cinq correspondances par INSERT OVERWRITE, sans doublons à la réexécution |
+| Créer et actualiser RAP_DEPOT | GOUVERNANCE, propriétaire du schéma puis de la politique ; signature VARCHAR → BOOLEAN, initialisation restrictive puis ALTER SET BODY |
+| Lire ACCES_DEPOT pour évaluer la politique | Droits du propriétaire de la politique, GOUVERNANCE ; aucun SELECT accordé aux rôles métier sur la table de correspondance |
+| Attacher RAP_DEPOT aux deux tables MARTS | GOUVERNANCE, avec APPLY ROW ACCESS POLICY sur le compte accordé au jour 1 ; aucun SELECT RH supplémentaire |
+| Lire les données RH | Privilèges de lecture existants, limités ensuite par la politique selon CURRENT_ROLE() ; les rôles secondaires ou hérités ne déterminent pas la correspondance |
+
+Correspondances préparées : TRANSFORMER, RH_PAIE et ANALYSTE → `*` (tous les dépôts) ; RESP_DEPOT_QUEENS → Queens ; RESP_DEPOT_BRONX → Bronx. Aucun droit de ligne pour un rôle absent, dont ACCOUNTADMIN, SYSADMIN et GOUVERNANCE. Le refus de SELECT pour GOUVERNANCE reste distinct d'un filtre qui renvoie zéro ligne.
+
+La même RAP_DEPOT est prévue sur `DIM_DRIVER.depot` et `MART_DRIVER_MONTHLY.depot`, chacune avec son propre dépôt ; DIM_DEPOT reste non filtrée. Les droits de TRANSFORMER doivent préserver toutes les lignes et les valeurs originales pour reconstruire le mart avec les vrais noms.
+
+L'attachement est ajouté seulement s'il n'existe pas de politique de lignes ; s'il correspond déjà à RAP_DEPOT sur la seule colonne DEPOT, il est conservé. Toute autre politique ou colonne déclenche une erreur visible, sans détachement. Les attachements, le statut ACTIVE et la réexécution restent à confirmer dans Snowsight.
+
+Aucun nouveau rôle, droit métier, tag ou changement de masquage n'est introduit. Les tests complets des valeurs et de reconstruction restent aux étapes 7/8. Les limites **C20 partiel** et **ACCOUNTADMIN/RAW** demeurent celles du cahier de tests ; aucun résultat de la partie 2 n'est rempli ou réécrit.
 
 Références officielles vérifiées pour la préparation : [GRANT privileges](https://docs.snowflake.com/en/sql-reference/sql/grant-privilege), [GRANT OWNERSHIP](https://docs.snowflake.com/en/sql-reference/sql/grant-ownership), [CREATE TAG](https://docs.snowflake.com/en/sql-reference/sql/create-tag).
 
