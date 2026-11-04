@@ -1,6 +1,6 @@
 # Note de veille réglementaire — données du personnel de Hudson Cab Partners
 
-État au 2 novembre 2026 : travail documentaire du jour 1 matin. Aucune mesure Snowflake n'a été exécutée ni vérifiée. Les données du kit sont annoncées fictives par le guide ; l'analyse porte sur le traitement RH décrit.
+Fiches juridiques consultées le 2 novembre 2026 ; état technique actualisé au 4 novembre 2026 d'après les observations de l'utilisateur dans Snowsight, sans nouvelle exécution par cette intervention. Les données du kit sont annoncées fictives par le guide ; l'analyse porte sur le traitement RH décrit.
 
 ## 1. Le droit applicable
 
@@ -25,9 +25,9 @@ Dispositif proposé ; abonnements et notifications non activés.
 | [CNIL — actualités](https://www.cnil.fr/fr/actualites) | Officielle, autorité française | RH, conservation, sécurité, sanctions | Hebdomadaire | Lecteur RSS choisi par l'utilisateur, [flux fourni par le brief](https://www.cnil.fr/fr/rss.xml), abonnement à réaliser |
 | [CEPD — actualités](https://www.edpb.europa.eu/news_en) | Officielle, comité européen | Lignes directrices, champ territorial et transferts | Hebdomadaire | Lecteur RSS via le bouton « RSS Feed » de la page ; abonnement à réaliser |
 
-Responsable proposé pendant la formation : David, auteur du dépôt ; relecture par le second membre du binôme, à identifier. Dans l'organisation : référent gouvernance pour le suivi, DPO/juriste pour la validation, direction pour les décisions. Cette organisation reste à confirmer.
+Responsable pendant la formation : David, auteur du dépôt ; projet réalisé individuellement. Dans l'organisation : référent gouvernance pour le suivi, DPO/juriste pour la validation, direction pour les décisions. Cette organisation reste à confirmer.
 
-À faire par l'utilisateur : activer les abonnements et le rappel, tester une notification, ajouter dans `docs/` une capture sans identifiants personnels, puis obtenir la relecture croisée. Lorsqu'une nouveauté a un impact, ajouter une fiche datée et son action ici.
+À faire par l'utilisateur : activer les abonnements et le rappel, tester une notification, ajouter dans `docs/` une capture sans identifiants personnels. Lorsqu'une nouveauté a un impact, ajouter une fiche datée et son action ici.
 
 ## 3. Les fiches de veille
 
@@ -37,7 +37,7 @@ Responsable proposé pendant la formation : David, auteur du dépôt ; relecture
 - **Date** : règlement du 27 avril 2016, applicable depuis le 25 mai 2018 (art. 99 §2) ; consulté le 2 novembre 2026. EUR-Lex bloqué par une vérification anti-robot : sa version consolidée n'a pas été contrôlée directement.
 - **Ce que dit le texte** : les art. 5 §1 c, d, e et f imposent minimisation, exactitude, conservation limitée et confidentialité. Les art. 25 et 32 demandent des mesures adaptées et évaluées ; aucun ne prescrit cinq ans, un jour ou un seuil de cinquante anomalies.
 - **Ce que cela change pour notre entrepôt** : justifier chaque colonne RH, chaque destinataire et la conservation des copies décrites dans le registre ; prévoir la vérification des accès et de l'effacement.
-- **Action** : à signaler à la direction : justifications manquantes recensées en section 4. Mise en œuvre et tests hors de cette intervention.
+- **Action** : à signaler à la direction : justifications manquantes recensées en section 4. La mise en œuvre et les résultats techniques rapportés sont décrits dans REGISTRE.md ; les justifications juridiques restent ouvertes.
 - **Nature** : règle juridique obligatoire pour le traitement décrit.
 
 ### Fiche 2 — CEPD : l'établissement européen et l'article 3
@@ -74,8 +74,8 @@ Analyse documentaire, sans verdict de conformité technique. Les durées et seui
 | Règle du contrat | Ce que disent les textes | Source | Conforme ? | Écart et proposition |
 |---|---|---|---|---|
 | R1 : suppression 5 ans après la fin du contrat | Durée nécessaire à la finalité ; effacement lorsque les conditions sont réunies, avec exceptions. | Art. 5 §1 e ; [art. 17 §1 et §3](https://www.cnil.fr/fr/reglement-europeen-protection-donnees/chapitre3) ; fiches 3–4 | Non démontré | Justification uniforme manquante ; absence de distinction actif/archive. Faire valider les durées par donnée et finalité, puis couvrir RAW, MARTS et autres copies ; ne pas transposer R. 1221-26 aux chauffeurs américains. |
-| R2 : Time Travel limité à 1 jour | Aucun délai légal universel d'un jour. Une restauration technique ne vaut pas justification de conservation. | Art. 5 §1 e, 17 ; [Time Travel](https://docs.snowflake.com/en/user-guide/data-time-travel), [Fail-safe](https://docs.snowflake.com/en/user-guide/data-failsafe), consultés le 2 novembre 2026 | Objectif interne cohérent ; insuffisant pour prouver l'effacement | Pour les tables permanentes, Fail-safe prévoit encore sept jours après Time Travel, avec récupération exceptionnelle par Snowflake ; des requêtes longues peuvent retarder la transition. Faire valider les copies, sauvegardes et délais réels ; aucun réglage du compte vérifié. |
-| R3 : fichier RH retiré du stage | Minimisation et sécurité, sans prescription juridique d'un stage Snowflake. | Art. 5 §1 c et f ; art. 32 ; fiche 1 | Mesure cohérente, non testée | Le SQL fourni prévoit la purge après chargement ; cela ne prouve ni le stage vide ni l'effacement des copies locales ou déjà publiées. Définir aussi leur conservation. |
+| R2 : Time Travel limité à 1 jour | Aucun délai légal universel d'un jour. Une restauration technique ne vaut pas justification de conservation. | Art. 5 §1 e, 17 ; [Time Travel](https://docs.snowflake.com/en/user-guide/data-time-travel), [Fail-safe](https://docs.snowflake.com/en/user-guide/data-failsafe), consultés le 2 novembre 2026 | Objectif interne cohérent ; insuffisant pour prouver l'effacement | Pour les tables permanentes, Fail-safe prévoit encore sept jours après Time Travel, avec récupération exceptionnelle par Snowflake ; des requêtes longues peuvent retarder la transition. Faire valider les copies, sauvegardes et délais réels ; réglage à 1 jour sur les quatre tables RH rapporté ; Time Travel avant purge démontré, sans garantie de disparition physique à un jour. |
+| R3 : fichier RH retiré du stage | Minimisation et sécurité, sans prescription juridique d'un stage Snowflake. | Art. 5 §1 c et f ; art. 32 ; fiche 1 | Mesure cohérente ; stage vide rapporté | PURGE=TRUE est appliqué au chargement et le stage a été contrôlé vide selon l'utilisateur ; cela ne prouve pas l'effacement des copies locales ou déjà publiées. Définir aussi leur conservation. |
 | Matrice des accès (qui voit quoi) | Accès limités aux besoins, protection par défaut et sécurité adaptée. | Art. 5 §1 c et f, 25 §2, 32 ; [chapitre IV](https://www.cnil.fr/fr/reglement-europeen-protection-donnees/chapitre4) | Partiellement justifiée sur le papier | « Tout » pour RH_PAIE et l'étendue du rôle des outils demandent justification. Identifiant interne, année de naissance et mesures mensuelles restent réidentifiants. Clarifier la contradiction apparente entre héritage administrateur sur RAW et absence de lignes RH dans la matrice. |
 | Tags des colonnes personnelles | Une information rattachable à une personne reste personnelle, même sans nom. | Art. 4 point 1 ; [chapitre I](https://www.cnil.fr/fr/reglement-europeen-protection-donnees/chapitre1) | Couverture incomplète | Aucun tag autorisé ne décrit fidèlement dépôt, dates professionnelles, horaires ou recettes. Les inventorier comme personnels ; demander une décision de protection sans inventer de valeur de tag. |
 | licence_unique : 0, avertissement | Exactitude et rectification des erreurs. | Art. 5 §1 d ; [art. 16](https://www.cnil.fr/fr/reglement-europeen-protection-donnees/chapitre3) | Contrôle utile, insuffisant | Une licence unique n'est pas forcément correcte ; prévoir le traitement de l'alerte. |
@@ -87,14 +87,14 @@ Analyse documentaire, sans verdict de conformité technique. Les durées et seui
 | service_unique : 0, avertissement | Exactitude. | Art. 5 §1 d | Contrôle utile, partiel | La déduplication STAGING ne corrige pas RAW ; définir la résolution des doublons. |
 | duree_plausible : 0, avertissement | Exactitude au regard des finalités. | Art. 5 §1 d | Contrôle utile, partiel | Seize heures est un seuil interne ; ni validation du droit du travail américain ni détection de toutes les durées erronées. |
 
-Les huit contrôles ne prouvent pas l'exactitude globale ; aucun résultat de qualité n'a été calculé. Les propositions sont des points de validation, pas des modifications du contrat.
+Les huit contrôles du contrat ne prouvent pas l'exactitude globale ; seuls trois sont implémentés. Résultats rapportés : licence_unique 4 / 0 / ALERTE ; telephone_renseigne 12 / 14,50 / OK ; service_rattache 25 / 50 / OK. Le test bloquant à 20 a réussi, puis le seuil normal 50 a été restauré. Les propositions sont des points de validation, pas des modifications du contrat.
 
 ## 5. Ce que la veille ne tranche pas
 
 - **Juriste/DPO et direction** : qui décide effectivement des finalités et moyens entre Hudson Cab Europe et le groupe ? Confirmer responsable, éventuelle responsabilité conjointe et contrat avec Snowflake (art. 4, 26, 28).
 - **Juriste RH compétent aux États-Unis** : quelles obligations locales et durées par catégorie ? Justifier R1 et l'archivage ; le droit américain n'a pas été étudié ici.
 - **DPO** : valider les bases légales par finalité (art. 6), l'information et les droits des chauffeurs (art. 13–17), ainsi que la nécessité éventuelle d'une AIPD (art. 35), sans la déclarer obligatoire à ce stade.
-- **Responsable cloud et juriste** : région du compte inconnue ; vérifier aussi destinataires, accès de support, sous-traitants et flux. Un transfert hors EEE éventuel relève des [art. 44–49](https://www.cnil.fr/fr/reglement-europeen-protection-donnees/chapitre5) ; aucun mécanisme ni certification du prestataire n'est présumé.
+- **Responsable cloud et juriste** : région AWS EU West rapportée par l'utilisateur ; vérifier aussi destinataires, accès de support, sous-traitants et flux. Un transfert hors EEE éventuel relève des [art. 44–49](https://www.cnil.fr/fr/reglement-europeen-protection-donnees/chapitre5) ; aucun mécanisme ni certification du prestataire n'est présumé.
 - **Direction et DPO** : arbitrer les tags incomplets, les habilitations étendues, les accès aux anciens chauffeurs, le traitement des alertes et l'ambiguïté administrateur.
 - **Utilisateur** : contrôler directement la version EUR-Lex, le PDF français du CEPD, l'abonnement RSS et ses notifications ; ces vérifications n'ont pas été simulées.
 
