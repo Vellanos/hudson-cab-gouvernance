@@ -99,6 +99,14 @@ Pour les colonnes catégorisées, les représentations proposées dans [ACCES.md
 Les colonnes sans catégorie adaptée restent conservées et recensées dans [REGISTRE.md](docs/REGISTRE.md), sans nouvelle valeur de tag ni affectation trompeuse. Le choix du masquage plutôt que de la suppression ne résout pas leur visibilité finale pour chaque rôle : ces limites restent celles du cahier de tests. Un futur masque fondé uniquement sur DONNEE_PERSONNELLE ne les couvrira pas automatiquement ; **C20 reste partiellement couvert**. Aucune politique n'est créée ni appliquée par cette étape.
 
 
+### Jour 3, étape 1 — purge RH selon R1
+
+La purge est préparée dans [purge_rh.sql](snowflake/rh/purge_rh.sql), sans exécution Snowflake. R1 s'applique aussi aux services : ils portent driver_id et décrivent l'activité du chauffeur. Le script cible les contrats terminés depuis au moins cinq ans, avec une limite incluse calculée depuis CURRENT_DATE(), et exclut les chauffeurs dont end_date est NULL. Il supprime les services associés avant les chauffeurs dans une même transaction, avec annulation et erreur visible en cas d'échec. Les services déjà orphelins restent à examiner par le contrôle service_rattache prévu ultérieurement.
+
+Exécuter la partie A seule et examiner les volumes avant de lancer séparément la partie B, commentée par défaut. Conserver dans Snowsight le repère horodaté de A et les identifiants des deux DELETE retournés par B, avant un second passage, pour le futur test Time Travel. À données et date limite inchangées, une seconde purge ne doit rien supprimer.
+
+**Les MARTS doivent ensuite être reconstruits** pour retirer leurs copies ; cette reconstruction n'est pas incluse dans le script. Les historiques peuvent rester temporairement accessibles via Time Travel selon la rétention existante. Les cinq ans proviennent du contrat de formation et ne constituent pas une validation juridique générale. Une purge SQL ne supprime pas automatiquement toutes les copies externes ou historiques, notamment les CSV locaux. Aucun réglage Time Travel, registre final ou résultat de test n'est modifié à cette étape.
+
 ## État d'avancement
 
 Correction Git et rédaction documentaire du jour 1 matin réalisées : quatre fiches datées, trois sources officielles proposées pour le suivi, inventaire et lecture statique du lignage. Le contrat reste inchangé.
