@@ -209,7 +209,7 @@ Résultats rapportés globalement, sans données individuelles ni résultat attr
 | Lancement bloquant, seuil temporaire 20 | T_QUALITE FAILED ; T_TABLES non exécutée sur ce lancement ; trois mesures qualité conservées | Même script ; COMMIT des résultats avant exception |
 | État final | Seuil contractuel 50 restauré ; trois tâches SUSPENDED | GET_DDL et SHOW TASKS prévus dans taches_rh.sql |
 
-Le test spécifique de conservation des e-mails RH_PAIE de D0003 (n° 11) reste sans résultat précis rapporté. Les succès de reconstruction et de masquage ci-dessus ne le remplacent pas. Les captures du graphe réussi, de QUALITE_RESULTATS et de l'audit restent à ajouter ; seule la [capture Lineage](lineage_mart_driver_monthly.png) est fournie.
+Le test spécifique de conservation des e-mails RH_PAIE de D0003 (n° 11) reste sans résultat précis rapporté. Les succès de reconstruction et de masquage ci-dessus ne le remplacent pas. Les captures du [graphe réussi](taches_execution_reussie.png), du [test bloquant](taches_test_blocage.png), de [QUALITE_RESULTATS](qualite_resultats.png), de l'[historique T_QUALITE](taches_historique_qualite.png), de l'[audit](audit_acces.png) et du [Lineage](lineage_mart_driver_monthly.png) sont disponibles. Elles ne complètent pas les tests individuels non confirmés.
 
 ### Ambiguïtés et conditions de validation
 

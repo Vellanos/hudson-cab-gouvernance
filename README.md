@@ -136,9 +136,13 @@ La [capture Lineage](docs/lineage_mart_driver_monthly.png) fournie montre STG_RH
 | Capture demandée dans docs/ | État réel |
 |---|---|
 | Lineage | [Capture fournie](docs/lineage_mart_driver_monthly.png) |
-| Graphe des tâches, lancement réussi | À ajouter manuellement |
-| QUALITE_RESULTATS | À ajouter manuellement |
-| Audit | À ajouter manuellement |
+| Graphe des tâches, lancement réussi | [Trois tâches réussies](docs/taches_execution_reussie.png) |
+| QUALITE_RESULTATS | [Trois mesures au seuil normal](docs/qualite_resultats.png) |
+| Audit | [21 opérations sur DIM_DRIVER](docs/audit_acces.png) |
+
+Le [test bloquant](docs/taches_test_blocage.png) montre T_PURGE réussie, T_QUALITE en échec et T_TABLES non exécutée. L'[historique de T_QUALITE](docs/taches_historique_qualite.png) montre les deux lancements (réussi et échoué), son propriétaire TRANSFORMER, le warehouse NYC_TAXI_WH et son état suspendu ; il ne prouve pas à lui seul l'état des deux autres tâches.
+
+La veille est configurée : abonnements [CNIL](docs/veille_rss_cnil.png) et [CEPD](docs/veille_rss_cepd.png) confirmés dans Inoreader ; [alerte RGPD](docs/veille_rss_eurlex_alerte.png) créée dans My EUR-Lex et [flux consulté](docs/veille_rss_eurlex_flux.png). Aucune réception ni aucun test de notification ne sont confirmés. Voir [VEILLE.md](docs/VEILLE.md).
 
 L'image existante gouvernance.png est un schéma pédagogique, pas une capture de validation Snowsight.
 
@@ -146,4 +150,4 @@ L'image existante gouvernance.png est un schéma pédagogique, pas une capture d
 
 Projet individuel : les étapes techniques des trois jours et leurs observations rapportées sont documentées dans le registre. Les tests sans résultat précis restent ouverts dans ACCES.md ; aucune validation globale du cahier de tests n'est déclarée.
 
-Restent à fournir : les trois captures manquantes ci-dessus, l'abonnement RSS effectif et sa capture (non confirmés), les validations juridiques et arbitrages C20/administrateur RAW. La version EUR-Lex et le PDF français du CEPD restent à vérifier selon VEILLE.md. La finalisation technique ne constitue pas une validation juridique du traitement.
+Les quatre captures de validation demandées et les preuves de configuration de la veille sont disponibles. Restent ouverts les tests sans résultat précis, les validations juridiques et les arbitrages C20/administrateur RAW. La version consolidée EUR-Lex et le PDF français du CEPD restent à vérifier selon VEILLE.md ; réception et test des notifications non confirmés. La finalisation technique ne constitue pas une validation juridique du traitement.

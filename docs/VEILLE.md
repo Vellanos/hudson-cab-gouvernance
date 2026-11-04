@@ -17,17 +17,17 @@ L'applicabilité du RGPD ne rend pas automatiquement applicable le droit du trav
 
 ## 2. Le dispositif de veille
 
-Dispositif proposé ; abonnements et notifications non activés.
+Dispositif configuré au 4 novembre 2026 : abonnements CNIL et CEPD confirmés dans Inoreader ; alerte « Règlement RGPD » créée dans My EUR-Lex. Les captures prouvent cette configuration, pas la réception ni le test d'une notification.
 
 | Source | Type (officielle, professionnelle…) | Ce qu'on y surveille | Fréquence | Outil de suivi |
 |---|---|---|---|---|
-| [EUR-Lex — RGPD](https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32016R0679) | Officielle, Union européenne | Modifications et rectificatifs du règlement | Mensuelle, et après une alerte | Favori et rappel calendrier à créer ; contrôle de la version |
-| [CNIL — actualités](https://www.cnil.fr/fr/actualites) | Officielle, autorité française | RH, conservation, sécurité, sanctions | Hebdomadaire | Lecteur RSS choisi par l'utilisateur, [flux fourni par le brief](https://www.cnil.fr/fr/rss.xml), abonnement à réaliser |
-| [CEPD — actualités](https://www.edpb.europa.eu/news_en) | Officielle, comité européen | Lignes directrices, champ territorial et transferts | Hebdomadaire | Lecteur RSS via le bouton « RSS Feed » de la page ; abonnement à réaliser |
+| [EUR-Lex — RGPD](https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32016R0679) | Officielle, Union européenne | Modifications et rectificatifs du règlement | Mensuelle, et après une alerte | Alerte « Règlement RGPD » enregistrée dans My EUR-Lex ; [alerte](veille_rss_eurlex_alerte.png) et [flux consulté](veille_rss_eurlex_flux.png). La lecture mensuelle reste la fréquence de suivi prévue |
+| [CNIL — actualités](https://www.cnil.fr/fr/actualites) | Officielle, autorité française | RH, conservation, sécurité, sanctions | Hebdomadaire | Inoreader : abonnement au [flux CNIL](https://www.cnil.fr/fr/rss.xml) confirmé, statut Following visible dans la [capture](veille_rss_cnil.png) |
+| [CEPD — actualités](https://www.edpb.europa.eu/news_en) | Officielle, comité européen | Lignes directrices, champ territorial et transferts | Hebdomadaire | Inoreader : abonnement au flux CEPD confirmé, statut Following visible dans la [capture](veille_rss_cepd.png) |
 
 Responsable pendant la formation : David, auteur du dépôt ; projet réalisé individuellement. Dans l'organisation : référent gouvernance pour le suivi, DPO/juriste pour la validation, direction pour les décisions. Cette organisation reste à confirmer.
 
-À faire par l'utilisateur : activer les abonnements et le rappel, tester une notification, ajouter dans `docs/` une capture sans identifiants personnels. Lorsqu'une nouveauté a un impact, ajouter une fiche datée et son action ici.
+Les quatre preuves de configuration sont versionnées dans `docs/`. Aucune réception de notification, aucun test de notification ni rappel calendrier ne sont confirmés. Lorsqu'une nouveauté a un impact, ajouter une fiche datée et son action ici ; les fréquences du tableau décrivent le suivi prévu, pas un historique de consultations déjà réalisé.
 
 ## 3. Les fiches de veille
 
@@ -96,6 +96,6 @@ Les huit contrôles du contrat ne prouvent pas l'exactitude globale ; seuls troi
 - **DPO** : valider les bases légales par finalité (art. 6), l'information et les droits des chauffeurs (art. 13–17), ainsi que la nécessité éventuelle d'une AIPD (art. 35), sans la déclarer obligatoire à ce stade.
 - **Responsable cloud et juriste** : région AWS EU West rapportée par l'utilisateur ; vérifier aussi destinataires, accès de support, sous-traitants et flux. Un transfert hors EEE éventuel relève des [art. 44–49](https://www.cnil.fr/fr/reglement-europeen-protection-donnees/chapitre5) ; aucun mécanisme ni certification du prestataire n'est présumé.
 - **Direction et DPO** : arbitrer les tags incomplets, les habilitations étendues, les accès aux anciens chauffeurs, le traitement des alertes et l'ambiguïté administrateur.
-- **Utilisateur** : contrôler directement la version EUR-Lex, le PDF français du CEPD, l'abonnement RSS et ses notifications ; ces vérifications n'ont pas été simulées.
+- **Utilisateur** : contrôler directement la version consolidée EUR-Lex et le PDF français du CEPD. Les abonnements CNIL/CEPD et l'alerte My EUR-Lex sont confirmés par les captures ; la réception et le test des notifications restent non confirmés. La consultation du flux EUR-Lex ne vaut pas vérification de la version consolidée du texte.
 
 Références pédagogiques consultées : [RESSOURCES.md du projet source](https://github.com/gsoulat/formation-data-IA/blob/main/99-Brief/Data-Engineer/Snowflake/Snowflake%2BGouvernance/RESSOURCES.md), guide, contrat et fiche juridique du dépôt. Les sources juridiques ci-dessus priment sur leur résumé pédagogique.
