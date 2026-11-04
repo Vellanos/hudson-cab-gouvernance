@@ -71,14 +71,14 @@ BEGIN
         WHERE end_date IS NOT NULL
           AND end_date <= :date_limite
     );
-    id_delete_services := SQLID;
     nb_services_supprimes := SQLROWCOUNT;
+    id_delete_services := SQLID;
 
     DELETE FROM NYC_TAXI.RAW.DRIVERS
     WHERE end_date IS NOT NULL
       AND end_date <= :date_limite;
-    id_delete_chauffeurs := SQLID;
     nb_chauffeurs_supprimes := SQLROWCOUNT;
+    id_delete_chauffeurs := SQLID;
 
     COMMIT;
 
